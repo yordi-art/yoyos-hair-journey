@@ -64,6 +64,4 @@ npm start
 | GET    | /orders     | List all orders    |
 | POST   | /orders     | Place an order     |
 
-## Admin Dashboard
-- Visit `/admin`
-- Password: `yoyo123`
+
