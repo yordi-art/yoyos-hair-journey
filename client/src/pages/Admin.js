@@ -122,7 +122,7 @@ export default function Admin() {
               <h3>{p.name}</h3>
               <p>{p.ingredients}</p>
               <p style={{ fontSize: '0.8rem', color: '#aaa' }}>{p.category}</p>
-              <div className="price">${Number(p.price).toFixed(2)}</div>
+              <div className="price">Br {Number(p.price)}</div>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button className="btn btn-secondary btn-sm" onClick={() => handleEdit(p)}>Edit</button>
                 <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p._id)}>Delete</button>
@@ -149,7 +149,7 @@ export default function Admin() {
                   <td>{o.phone}</td>
                   <td>{o.product?.name || '—'}</td>
                   <td>{o.quantity}</td>
-                  <td>${((o.product?.price || 0) * o.quantity).toFixed(2)}</td>
+                  <td>Br {((o.product?.price || 0) * o.quantity)}</td>
                   <td>{new Date(o.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}

@@ -49,35 +49,6 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-visual">
-          <div className="hero-oil-bottle">
-            <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg" width="200">
-              <defs>
-                <linearGradient id="bottleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#ff69b4"/>
-                  <stop offset="100%" stopColor="#c2185b"/>
-                </linearGradient>
-                <linearGradient id="liquidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#ffb3d1"/>
-                  <stop offset="100%" stopColor="#ff69b4"/>
-                </linearGradient>
-              </defs>
-              {/* Bottle cap */}
-              <rect x="80" y="20" width="40" height="30" rx="8" fill="url(#bottleGrad)"/>
-              <rect x="85" y="10" width="30" height="15" rx="5" fill="#c2185b"/>
-              {/* Bottle body */}
-              <path d="M60 60 Q55 80 50 100 L50 240 Q50 260 100 260 Q150 260 150 240 L150 100 Q145 80 140 60 Z" fill="white" stroke="#ffc0cb" strokeWidth="2"/>
-              {/* Liquid */}
-              <path d="M52 140 L52 240 Q52 258 100 258 Q148 258 148 240 L148 140 Z" fill="url(#liquidGrad)" opacity="0.6"/>
-              {/* Label */}
-              <rect x="62" y="130" width="76" height="90" rx="8" fill="white" opacity="0.9"/>
-              <text x="100" y="158" fontFamily="Arial" fontSize="9" fontWeight="bold" fill="#ff69b4" textAnchor="middle">YOYO'S</text>
-              <text x="100" y="172" fontFamily="Arial" fontSize="7" fill="#c2185b" textAnchor="middle">HAIR JOURNEY</text>
-              <text x="100" y="188" fontFamily="Arial" fontSize="18" textAnchor="middle">🌿</text>
-              <text x="100" y="208" fontFamily="Arial" fontSize="7" fill="#888" textAnchor="middle">Herbal Hair Oil</text>
-              {/* Shine */}
-              <ellipse cx="75" cy="100" rx="6" ry="20" fill="white" opacity="0.3" transform="rotate(-15 75 100)"/>
-            </svg>
-          </div>
           <div className="floating-badge fb1">🌸 Herbal</div>
           <div className="floating-badge fb2">✨ Glow</div>
           <div className="floating-badge fb3">💪 Strong</div>

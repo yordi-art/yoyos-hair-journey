@@ -34,7 +34,7 @@ export default function Order() {
     }
   };
 
-  const total = selected ? (selected.price * form.quantity).toFixed(2) : '0.00';
+  const total = selected ? selected.price * form.quantity : 0;
 
   return (
     <div className="page">
@@ -60,7 +60,7 @@ export default function Order() {
               <span className="order-product-badge">{p.category}</span>
               <h4>{p.name}</h4>
               <p>🌿 {p.ingredients}</p>
-              <strong className="order-product-price">${p.price.toFixed(2)}</strong>
+              <strong className="order-product-price">Br {p.price}</strong>
             </div>
             {selected?._id === p._id && <div className="selected-check">✓</div>}
           </div>
@@ -81,7 +81,7 @@ export default function Order() {
               <strong>{selected.name}</strong>
               <span>{selected.category}</span>
             </div>
-            <strong className="price">${selected.price.toFixed(2)}</strong>
+            <strong className="price">Br {selected.price}</strong>
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -105,14 +105,14 @@ export default function Order() {
             {/* Order Summary */}
             <div className="order-summary">
               <div className="summary-row"><span>Product</span><span>{selected.name}</span></div>
-              <div className="summary-row"><span>Unit Price</span><span>${selected.price.toFixed(2)}</span></div>
+              <div className="summary-row"><span>Unit Price</span><span>Br {selected.price}</span></div>
               <div className="summary-row"><span>Quantity</span><span>{form.quantity}</span></div>
-              <div className="summary-row summary-total"><span>Total</span><span>${total}</span></div>
+              <div className="summary-row summary-total"><span>Total</span><span>Br {total}</span></div>
             </div>
 
             {status === 'error' && <div className="alert alert-error">Something went wrong. Try again.</div>}
             <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={submitting}>
-              {submitting ? 'Placing Order...' : `Confirm Order — $${total} 🌸`}
+              {submitting ? 'Placing Order...' : `Confirm Order — Br ${total} 🌸`}
             </button>
           </form>
         </div>

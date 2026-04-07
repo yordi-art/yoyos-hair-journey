@@ -46,7 +46,7 @@ export default function Products() {
     }
   };
 
-  const total = popup ? (popup.price * form.quantity).toFixed(2) : 0;
+  const total = popup ? popup.price * form.quantity : 0;
 
   return (
     <div className="page">
@@ -90,7 +90,7 @@ export default function Products() {
                   <p><strong>📋 Usage:</strong> {p.usage}</p>
                 </div>
                 <div className="product-footer">
-                  <div className="price">${p.price.toFixed(2)}</div>
+                  <div className="price">Br {p.price}</div>
                   <button className="btn btn-primary" onClick={() => openPopup(p)}>Order Now 🛒</button>
                 </div>
               </div>
@@ -114,7 +114,7 @@ export default function Products() {
                 <div className="thankyou-details">
                   <div className="thankyou-row"><span>Product</span><strong>{ordered?.name}</strong></div>
                   <div className="thankyou-row"><span>Quantity</span><strong>{form.quantity}</strong></div>
-                  <div className="thankyou-row"><span>Total Paid</span><strong>${(ordered?.price * form.quantity).toFixed(2)}</strong></div>
+                  <div className="thankyou-row"><span>Total Paid</span><strong>Br {ordered?.price * form.quantity}</strong></div>
                 </div>
                 <p className="thankyou-note">💌 We'll contact you on <strong>{form.phone}</strong> to confirm delivery.</p>
                 <p className="thankyou-quote">"Your hair journey to greatness starts now! 🌸"</p>
@@ -151,13 +151,13 @@ export default function Products() {
                     />
                   </div>
                   <div className="order-summary">
-                    <div className="summary-row"><span>Unit Price</span><span>${popup.price.toFixed(2)}</span></div>
+                    <div className="summary-row"><span>Unit Price</span><span>Br {popup.price}</span></div>
                     <div className="summary-row"><span>Quantity</span><span>{form.quantity}</span></div>
-                    <div className="summary-row summary-total"><span>Total</span><span>${total}</span></div>
+                    <div className="summary-row summary-total"><span>Total</span><span>Br {total}</span></div>
                   </div>
                   {status === 'error' && <div className="alert alert-error">Something went wrong. Try again.</div>}
                   <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={submitting}>
-                    {submitting ? 'Placing Order...' : `Confirm Order — $${total} 🌸`}
+                    {submitting ? 'Placing Order...' : `Confirm Order — Br ${total} 🌸`}
                   </button>
                 </form>
               </>
