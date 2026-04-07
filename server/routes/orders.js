@@ -1,0 +1,18 @@
+const router = require('express').Router();
+const Order = require('../models/Order');
+
+router.get('/', async (req, res) => {
+  const orders = await Order.find().populate('product');
+  res.json(orders);
+});
+
+router.post('/', async (req, res) => {
+  try {
+    const order = await Order.create(req.body);
+    res.status(201).json(order);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+module.exports = router;
