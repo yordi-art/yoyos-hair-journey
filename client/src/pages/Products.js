@@ -7,18 +7,19 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
-  const [popup, setPopup] = useState(null); // selected product for order
+  const [popup, setPopup] = useState(null);
   const [form, setForm] = useState({ name: '', phone: '', quantity: 1 });
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState(null); // null | 'success' | 'error'
   const [submitting, setSubmitting] = useState(false);
+  const [ordered, setOrdered] = useState(null); // product that was ordered
 
   useEffect(() => {
     API.get('/products').then((r) => setProducts(r.data)).catch(() => {});
   }, []);
 
   const filtered = products.filter((p) => {
-    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.ingredients.toLowerCase().includes(search.toLowerCase());
+    const q = search.toLowerCase();
+    const matchSearch = p.name.toLowerCase().includes(q) || p.ingredients.toLowerCase().includes(q);
     const matchCat = category === 'All' || p.category === category;
     return matchSearch && matchCat;
   });
@@ -36,6 +37,7 @@ export default function Products() {
     setSubmitting(true);
     try {
       await API.post('/orders', { ...form, product: popup._id });
+      setOrdered(popup);
       setStatus('success');
     } catch {
       setStatus('error');
@@ -48,23 +50,24 @@ export default function Products() {
 
   return (
     <div className="page">
-      <h2 className="section-title">Our Hair Oils</h2>
+      <h2 className="section-title">Our Hair Oils 🌿</h2>
+      <p style={{ textAlign: 'center', color: '#888', marginBottom: '2rem', marginTop: '-1rem' }}>
+        11 premium herbal oils crafted for every hair need
+      </p>
 
       {/* Search & Filter */}
       <div className="products-toolbar">
         <input
           className="search-input"
-          placeholder="🔍 Search products or ingredients..."
+          placeholder="🔍 Search by name or ingredient..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="filter-tabs">
           {CATEGORIES.map((c) => (
-            <button
-              key={c}
-              className={`filter-tab${category === c ? ' active' : ''}`}
-              onClick={() => setCategory(c)}
-            >{c}</button>
+            <button key={c} className={`filter-tab${category === c ? ' active' : ''}`} onClick={() => setCategory(c)}>
+              {c}
+            </button>
           ))}
         </div>
       </div>
@@ -79,13 +82,18 @@ export default function Products() {
                 <img src={`/images/${p.image}`} alt={p.name} className="product-img" />
                 <span className="product-badge">{p.category}</span>
               </div>
-              <h3>{p.name}</h3>
-              <p><strong>🌿 Ingredients:</strong> {p.ingredients}</p>
-              <p><strong>📋 Usage:</strong> {p.usage}</p>
-              <div className="price">${p.price.toFixed(2)}</div>
-              <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => openPopup(p)}>
-                Order Now 🛒
-              </button>
+              <div className="product-card-body">
+                <h3>{p.name}</h3>
+                {p.description && <p className="product-desc">{p.description}</p>}
+                <div className="product-meta">
+                  <p><strong>🌿 Ingredients:</strong> {p.ingredients}</p>
+                  <p><strong>📋 Usage:</strong> {p.usage}</p>
+                </div>
+                <div className="product-footer">
+                  <div className="price">${p.price.toFixed(2)}</div>
+                  <button className="btn btn-primary" onClick={() => openPopup(p)}>Order Now 🛒</button>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -96,44 +104,63 @@ export default function Products() {
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup" onClick={(e) => e.stopPropagation()}>
             <button className="popup-close" onClick={closePopup}>✕</button>
-            <h2>Order: {popup.name}</h2>
 
+            {/* Thank You Screen */}
             {status === 'success' ? (
-              <div>
-                <div className="alert alert-success">🎉 Order placed! We'll contact you soon.</div>
-                <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} onClick={closePopup}>Close</button>
+              <div className="thankyou-screen">
+                <div className="thankyou-icon">🎉</div>
+                <h2>Thank You, {form.name || 'Beautiful'}!</h2>
+                <p>Your order for <strong>{ordered?.name}</strong> has been placed successfully.</p>
+                <div className="thankyou-details">
+                  <div className="thankyou-row"><span>Product</span><strong>{ordered?.name}</strong></div>
+                  <div className="thankyou-row"><span>Quantity</span><strong>{form.quantity}</strong></div>
+                  <div className="thankyou-row"><span>Total Paid</span><strong>${(ordered?.price * form.quantity).toFixed(2)}</strong></div>
+                </div>
+                <p className="thankyou-note">💌 We'll contact you on <strong>{form.phone}</strong> to confirm delivery.</p>
+                <p className="thankyou-quote">"Your hair journey to greatness starts now! 🌸"</p>
+                <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} onClick={closePopup}>
+                  Continue Shopping 💕
+                </button>
               </div>
             ) : (
-              <form onSubmit={handleOrder}>
-                <div className="form-group">
-                  <label>Full Name</label>
-                  <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name" />
-                </div>
-                <div className="form-group">
-                  <label>Phone Number</label>
-                  <input required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="e.g. 08012345678" />
-                </div>
-                <div className="form-group">
-                  <label>Quantity</label>
-                  <input
-                    required type="number" min="1" max="100"
-                    value={form.quantity}
-                    onChange={(e) => setForm({ ...form, quantity: Math.max(1, parseInt(e.target.value) || 1) })}
-                  />
+              <>
+                {/* Product preview in popup */}
+                <div className="popup-product-preview">
+                  <img src={`/images/${popup.image}`} alt={popup.name} />
+                  <div>
+                    <h2>{popup.name}</h2>
+                    <span className="product-badge" style={{ position: 'static' }}>{popup.category}</span>
+                  </div>
                 </div>
 
-                {/* Order Summary */}
-                <div className="order-summary">
-                  <div className="summary-row"><span>Unit Price</span><span>${popup.price.toFixed(2)}</span></div>
-                  <div className="summary-row"><span>Quantity</span><span>{form.quantity}</span></div>
-                  <div className="summary-row summary-total"><span>Total</span><span>${total}</span></div>
-                </div>
-
-                {status === 'error' && <div className="alert alert-error">Something went wrong. Try again.</div>}
-                <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={submitting}>
-                  {submitting ? 'Placing Order...' : `Confirm Order — $${total}`}
-                </button>
-              </form>
+                <form onSubmit={handleOrder}>
+                  <div className="form-group">
+                    <label>Full Name</label>
+                    <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name" />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone Number</label>
+                    <input required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="e.g. 08012345678" />
+                  </div>
+                  <div className="form-group">
+                    <label>Quantity</label>
+                    <input
+                      required type="number" min="1" max="100"
+                      value={form.quantity}
+                      onChange={(e) => setForm({ ...form, quantity: Math.max(1, parseInt(e.target.value) || 1) })}
+                    />
+                  </div>
+                  <div className="order-summary">
+                    <div className="summary-row"><span>Unit Price</span><span>${popup.price.toFixed(2)}</span></div>
+                    <div className="summary-row"><span>Quantity</span><span>{form.quantity}</span></div>
+                    <div className="summary-row summary-total"><span>Total</span><span>${total}</span></div>
+                  </div>
+                  {status === 'error' && <div className="alert alert-error">Something went wrong. Try again.</div>}
+                  <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={submitting}>
+                    {submitting ? 'Placing Order...' : `Confirm Order — $${total} 🌸`}
+                  </button>
+                </form>
+              </>
             )}
           </div>
         </div>

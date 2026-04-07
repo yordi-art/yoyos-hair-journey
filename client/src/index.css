@@ -525,3 +525,61 @@ a { text-decoration: none; color: inherit; }
   .growth-visual { justify-content: center; }
   .hero-oil-bottle svg { width: 140px; }
 }
+
+/* ── Product card body ── */
+.product-card-body { padding: 1rem 1.2rem 1.2rem; }
+.product-card-body h3 { color: #ff69b4; margin-bottom: 0.4rem; font-size: 1.05rem; }
+.product-desc { color: #555; font-size: 0.88rem; line-height: 1.55; margin-bottom: 0.7rem; font-style: italic; border-left: 3px solid #ffc0cb; padding-left: 0.6rem; }
+.product-meta p { color: #777; font-size: 0.82rem; margin-bottom: 0.3rem; }
+.product-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.9rem; }
+.product-footer .price { font-size: 1.3rem; font-weight: 700; color: #ff69b4; }
+
+/* ── Popup product preview ── */
+.popup-product-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #fff0f5;
+}
+.popup-product-preview img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; }
+.popup-product-preview h2 { font-size: 1rem; color: #333; margin-bottom: 0.3rem; }
+
+/* ── Thank You Screen ── */
+.thankyou-screen { text-align: center; padding: 0.5rem 0; }
+.thankyou-icon { font-size: 4rem; margin-bottom: 0.8rem; animation: pop 0.4s ease; }
+@keyframes pop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.thankyou-screen h2 { color: #ff69b4; font-size: 1.5rem; margin-bottom: 0.5rem; font-family: Georgia, serif; }
+.thankyou-screen > p { color: #666; margin-bottom: 1rem; font-size: 0.95rem; }
+.thankyou-details {
+  background: #fff0f5;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+  text-align: left;
+}
+.thankyou-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #ffe4ec;
+  font-size: 0.9rem;
+}
+.thankyou-row:last-child { border-bottom: none; }
+.thankyou-row span { color: #888; }
+.thankyou-row strong { color: #333; }
+.thankyou-note { color: #888; font-size: 0.85rem; margin: 0.5rem 0; }
+.thankyou-quote {
+  color: #ff69b4;
+  font-style: italic;
+  font-size: 0.95rem;
+  margin-top: 0.8rem;
+  padding: 0.8rem;
+  background: #fff0f5;
+  border-radius: 10px;
+}
