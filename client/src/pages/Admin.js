@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import API from '../api';
 
 const ADMIN_PASS = 'yoyo123';
+const CATEGORIES = ['Growth', 'Strengthening', 'Repair', 'Moisture', 'Shine', 'Styling', 'Combo'];
+const EMPTY_FORM = { name: '', ingredients: '', usage: '', price: '', image: '', category: 'Growth' };
 
 export default function Admin() {
   const [auth, setAuth] = useState(false);
   const [pass, setPass] = useState('');
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [form, setForm] = useState({ name: '', ingredients: '', price: '', description: '' });
+  const [form, setForm] = useState(EMPTY_FORM);
   const [editId, setEditId] = useState(null);
   const [msg, setMsg] = useState(null);
 
@@ -48,7 +50,7 @@ export default function Admin() {
         await API.post('/products', form);
         setMsg('Product added!');
       }
-      setForm({ name: '', ingredients: '', price: '', description: '' });
+      setForm(EMPTY_FORM);
       load();
     } catch {
       setMsg('Error saving product.');
@@ -57,7 +59,7 @@ export default function Admin() {
 
   const handleEdit = (p) => {
     setEditId(p._id);
-    setForm({ name: p.name, ingredients: p.ingredients, price: p.price, description: p.description || '' });
+    setForm({ name: p.name, ingredients: p.ingredients, usage: p.usage || '', price: p.price, image: p.image || '', category: p.category || 'Growth' });
   };
 
   const handleDelete = async (id) => {
@@ -65,6 +67,8 @@ export default function Admin() {
     await API.delete(`/products/${id}`);
     load();
   };
+
+  const f = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   return (
     <div className="page">
@@ -77,23 +81,33 @@ export default function Admin() {
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>Product Name</label>
-              <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Yoyo Herbal Hair Oil" />
+              <input required value={form.name} onChange={f('name')} placeholder="e.g. Yoyo Herbal Growth Oil" />
             </div>
             <div className="form-group">
               <label>Ingredients</label>
-              <input required value={form.ingredients} onChange={(e) => setForm({ ...form, ingredients: e.target.value })} placeholder="e.g. Castor oil, rosemary, coconut oil" />
+              <input required value={form.ingredients} onChange={f('ingredients')} placeholder="e.g. Castor, Rosemary, Coconut" />
             </div>
             <div className="form-group">
-              <label>Price (₦)</label>
-              <input required type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. 3500" />
+              <label>Usage Instructions</label>
+              <input required value={form.usage} onChange={f('usage')} placeholder="e.g. Massage into scalp 2x daily" />
             </div>
             <div className="form-group">
-              <label>Description (optional)</label>
-              <textarea rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Short product description" />
+              <label>Price ($)</label>
+              <input required type="number" value={form.price} onChange={f('price')} placeholder="e.g. 10" />
+            </div>
+            <div className="form-group">
+              <label>Image filename</label>
+              <input value={form.image} onChange={f('image')} placeholder="e.g. oil1.jpg" />
+            </div>
+            <div className="form-group">
+              <label>Category</label>
+              <select value={form.category} onChange={f('category')}>
+                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+              </select>
             </div>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <button type="submit" className="btn btn-primary">{editId ? 'Update' : 'Add Product'}</button>
-              {editId && <button type="button" className="btn btn-secondary" onClick={() => { setEditId(null); setForm({ name: '', ingredients: '', price: '', description: '' }); }}>Cancel</button>}
+              {editId && <button type="button" className="btn btn-secondary" onClick={() => { setEditId(null); setForm(EMPTY_FORM); }}>Cancel</button>}
             </div>
           </form>
         </div>
@@ -104,9 +118,11 @@ export default function Admin() {
         <div className="card-grid">
           {products.map((p) => (
             <div className="card" key={p._id}>
+              {p.image && <img src={`/images/${p.image}`} alt={p.name} style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.5rem' }} />}
               <h3>{p.name}</h3>
               <p>{p.ingredients}</p>
-              <div className="price">₦{p.price.toLocaleString()}</div>
+              <p style={{ fontSize: '0.8rem', color: '#aaa' }}>{p.category}</p>
+              <div className="price">${Number(p.price).toFixed(2)}</div>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button className="btn btn-secondary btn-sm" onClick={() => handleEdit(p)}>Edit</button>
                 <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p._id)}>Delete</button>
@@ -122,12 +138,7 @@ export default function Admin() {
           <table className="orders-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Product</th>
-                <th>Date</th>
+                <th>#</th><th>Customer</th><th>Phone</th><th>Product</th><th>Qty</th><th>Total</th><th>Date</th>
               </tr>
             </thead>
             <tbody>
@@ -136,13 +147,14 @@ export default function Admin() {
                   <td>{i + 1}</td>
                   <td>{o.name}</td>
                   <td>{o.phone}</td>
-                  <td>{o.address}</td>
                   <td>{o.product?.name || '—'}</td>
+                  <td>{o.quantity}</td>
+                  <td>${((o.product?.price || 0) * o.quantity).toFixed(2)}</td>
                   <td>{new Date(o.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
               {orders.length === 0 && (
-                <tr><td colSpan={6} style={{ textAlign: 'center', color: '#999' }}>No orders yet.</td></tr>
+                <tr><td colSpan={7} style={{ textAlign: 'center', color: '#999' }}>No orders yet.</td></tr>
               )}
             </tbody>
           </table>
