@@ -1,6 +1,8 @@
 # 🌸 Yoyo's Hair Journey
 
-A full-stack MERN application for Yoyo's herbal hair care brand.
+A polished full-stack MERN application for a herbal hair care brand, featuring product management, order tracking, and beauty tips.
+
+Licensed under the MIT License.
 
 ## Folder Structure
 
