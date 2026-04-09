@@ -1,6 +1,4 @@
-git add README.md LICENSE
-git commit -m "Add MIT license and short project description"
-git pushMIT License
+
 
 Copyright (c) 2026 Yoyo's Hair Journey
 
