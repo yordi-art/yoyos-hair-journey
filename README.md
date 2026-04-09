@@ -36,18 +36,9 @@ yoyos-hair-journey/
 
 ## Setup & Run
 
-### 1. Start MongoDB
-Make sure MongoDB is running locally on port `27017`, or update `MONGO_URI` in `server/.env`.
 
-### 2. Start the Backend
-```bash
-cd server
-npm install
-npm run dev
-# Runs on http://localhost:5000
-```
 
-### 3. Start the Frontend
+### 2. Start the Frontend
 ```bash
 cd client
 npm install
